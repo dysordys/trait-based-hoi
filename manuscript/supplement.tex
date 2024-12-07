@@ -1,0 +1,866 @@
+\documentclass[10pt]{article}
+
+\usepackage{graphicx}
+\usepackage{float}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{mathtools}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+\usepackage{appendix}
+%% The amsthm package provides extended theorem environments
+\usepackage[authoryear]{natbib}
+\usepackage[small]{titlesec}
+\usepackage[bf]{caption}
+\usepackage{bm}
+
+
+\makeatletter
+\def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \def\@oddfoot{}%
+ \let\@evenfoot\@oddfoot}
+\makeatother
+
+\usepackage{lineno}
+\usepackage{setspace}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[protrusion=true,expansion=true]{microtype}
+%\renewcommand{\baselinestretch}{1.5}
+\newcommand{\ud}{\text{d}}
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\clubpenalty = 10000
+\widowpenalty = 10000
+\bibpunct{(}{)}{,}{a}{}{,}
+\graphicspath{{../figures/SI/}}
+\allowdisplaybreaks
+
+
+\begin{document}
+
+\title{Supplementary: When do trait-based higher-order interactions and individual variation promote robust species coexistence?}
+
+\author{Gaurav Baruah$^{\ddag, 1,\ast}$, Gy\"orgy Barab\'as$^{\ddag, 2,3}$, Robert John$^4$\\
+$^1$\small{Faculty of Biology, Theoretical Biology, University of Bielefeld, Bielefeld, 33501, Germany}\\
+$^2$\small{Division of Biology, Link\"oping University, Link\"oping, Sweden}\\
+$^3$\small{Institute of Evolution, Centre for Ecological Research, Budapest, Hungary}\\
+$^4$\small{Department of Biological Sciences, IISER Kolkata, Mohanpur, 741246, India}
+}
+
+\date{}
+
+\maketitle
+
+
+\section{General framework}
+
+\subsection{Per capita growth rates and governing equations}
+
+We model the eco-evolutionary dynamics of $S$ interacting species, each composed of phenotypes $z$ along a one-dimensional trait axis. The distribution $p_i(z)$ of the quantitative trait is Gaussian for each species $i$, with mean $u_{i}$ and standard deviation $\sigma_{i}$:
+\begin{equation}
+  \label{eq:p}
+  p_i(z) = \frac{1}{\sqrt{2\pi} \sigma_i} \exp \left(-\frac{(z-u_i)^2}{2\sigma_i^2} \right) .
+\end{equation} 
+If $N_i$ is the number of individuals of species $i$, then $N_i p_i(z) \,\ud z$ is the population density of species $i$'s individuals with trait value between $z$ and $z+\ud z$ \citep{lande_adaptation_2009}.
+
+In the quantitative genetic approximation, many independent loci contribute to the phenotype $z$ of any individual, each with a small additive effect. Under this model, the trait variances do not evolve, and the dynamics of the population densities $N_i$ and the trait means $u_i$ are given by the following pair of equations \citep{barabas_effect_2016, pastore_evolution_2021, akesson_importance_2021, barabas_evolution_2022}:
+\begin{align}
+  \label{eq:n}
+  \frac{\ud N_i}{\ud t} &= N_i \int r(z) p_i(z) \,\ud z ,\\
+  \label{eq:m}
+  \frac{\ud u_i}{\ud t} &= h_i^2 \int (z-u_i) r(z) p_i(z) \,\ud z ,
+\end{align}
+where $r_i(z)$ is the per capita growth rate of species $i$'s phenotype $z$, $h_i^2$ is the heritability of the trait $z$ for species $i$, and all integrals go from $-\infty$ to $+\infty$.
+
+The form of the per capita growth rates is determined by ecological interactions, and is in principle arbitrary. In this work, all models will have the following structure:
+\begin{equation}
+  \label{eq:pgr_general}
+  r(z) = r_0(z) - \sum_{j=1}^S N_j \int a(z,z') p_j(z') \,\ud z' - \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z'' .
+\end{equation}
+Here $r_0(z)$ is the intrinsic growth rate of phenotype $z$, $a(z,z')$ is the pairwise phenotype-to-phenotype effect of $z'$ on $z$, and $W(z,z',z'')$ is the three-way higher-order interaction (HOI) effect of $z'$ on $z$ given the presence of phenotype $z''$. We can substitute this expression into Eqs.~\ref{eq:n}-\ref{eq:m}:
+\begin{equation}
+  \label{eq:n_spplevel}
+  \begin{split}
+  \frac{\ud N_i}{\ud t}
+  = N_i \int &\left[ r_0(z)
+  - \sum_{j=1}^S N_j \int a(z,z') p_j(z') \,\ud z' \right.
+  \\ &\quad \left.
+  - \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z'' \right]
+  p_i(z) \,\ud z ,
+  \end{split}
+\end{equation}
+\begin{equation}
+  \label{eq:m_spplevel}
+  \begin{split}
+  \frac{\ud u_i}{\ud t}
+  = h_i^2 \int (z - u_i) &\left[ r_0(z)
+  - \sum_{j=1}^S N_j \int a(z,z') p_j(z') \,\ud z' \right.
+  \\ &\quad \left.
+  - \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z'' \right]
+  p_i(z) \,\ud z ,
+  \end{split}
+\end{equation}
+and introduce some simplifying notation that will reveal the general structure of these equations:
+\begin{align}
+  \label{eq:b_general}
+  b_i
+  &= \int r_0(z) p_i(z) \,\ud z ,
+  \\
+  \label{eq:alpha_general}
+  \alpha_{ij}
+  &= \iint a(z,z') p_i(z) p_j(z') \,\ud z' \ud z ,
+  \\
+  \label{eq:epsilon_general}
+  \epsilon_{ijk}
+  &= \iiint W(z,z',z'') p_i(z) p_j(z') p_k(z'') \,\ud z'' \ud z' \ud z ,
+  \\
+  \label{eq:g_general}
+  g_i
+  &= \int (z-u_i) r_0(z) p_i(z) \,\ud z ,
+  \\
+  \label{eq:beta_general}
+  \beta_{ij}
+  &= \iint (z-u_i) a(z,z') p_i(z) p_j(z') \,\ud z' \ud z ,
+  \\
+  \label{eq:gamma_general}
+  \gamma_{ijk}
+  &= \iiint (z-u_i) W(z,z',z'') p_i(z) p_j(z') p_k(z'')\,\ud z''\ud z'\ud z .
+\end{align}
+Using these quantities, we rewrite Eqs.~\ref{eq:n_spplevel}-\ref{eq:m_spplevel} as
+\begin{align}
+  \label{eq:n_spp}
+  \frac{\ud N_i}{\ud t}
+  &= N_i \left[ b_i
+  - \sum_{j=1}^S \alpha_{ij} N_j
+  - \sum_{j=1}^S \sum_{k=1}^S \epsilon_{ijk} N_j N_k \right] ,
+  \\
+  \label{eq:m_spp}
+  \frac{\ud u_i}{\ud t}
+  &= h_i^2 \left[ g_i
+  - \sum_{j=1}^S \beta_{ij} N_j
+  - \sum_{j=1}^S \sum_{k=1}^S \gamma_{ijk} N_j N_k \right] .
+\end{align}
+These are the species-level equations for the eco-evolutionary dynamics. When $\epsilon_{ijk} = 0$, Eq.~\ref{eq:n_spp} reduces to a classic generalized Lotka--Volterra system with intrinsic rates $b_i$ and interaction coefficients $\alpha_{ij}$.
+
+\subsection{Avoiding self-effects in higher-order interactions} \label{sec:noself}
+
+The most principled way of modeling HOIs is to make sure that $W(z,z,z) = 0$. If this property does not hold, then we end up with ``higher-order self-effects'', a concept that is an oxymoron. Here we show that despite this fact, it is sufficient if $W(z,z,z) = W_0$ is a $z$-independent constant. The reason is that we can then redefine the higher-order kernel as $W'(z,z',z'') = W(z,z',z'') - W_0$, and in return add the common density-dependent factor $W_0 (\sum_j N_j)^2$ to the per capita growth rates. Writing out only the HOI term of Eq.~\ref{eq:pgr_general} (since the other terms are unchanged):
+\begin{equation}
+  \label{eq:HOI_self}
+  \begin{split}
+  &    \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W'(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z''
+  \\ &=\sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint \left[W(z,z',z'') - W_0\right] p_j(z') p_k(z'')
+  \,\ud z' \,\ud z''
+  \\ &= \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z''
+  - W_0 \sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \underbrace{\iint p_j(z') p_k(z'') \,\ud z' \,\ud 
+  z''}_{\text{1, due to normalization (Eq.~\ref{eq:p})}}
+  \\ &= \underbrace{\sum_{j=1}^S \sum_{k=1}^S N_j N_k
+  \iint W(z,z',z'') p_j(z') p_k(z'') \,\ud z' \,\ud z''}_
+  {\text{original HOI term in Eq.~\ref{eq:pgr_general}}}
+  - \underbrace{W_0 \left(\sum_{j=1}^S N_j\right)
+  \left(\sum_{k=1}^S N_k\right)}_
+  {\text{common factor}} ,
+  \end{split}
+\end{equation}
+where the last term is simply $W_0 (\sum_j N_j)^2$ after relabeling summation indices. A model with a higher-order kernel where $W(z,z,z) = W_0$ is therefore equivalent to another model with $W(z,z,z)=0$ but which has an extra $W_0 (\sum_j N_j)^2$ term. This term is $z$-independent, shows up for all species, and depends only on the total community density $\sum_j N_j$. Thus, whenever we have a HOI model with $W(z,z,z)=W_0$, it is understood that we subtract off $W_0$ from the HOI kernel and add the common density-dependent term $W_0(\sum_j N_j)^2$ to the growth rates to compensate. This maintains the principle that there is no such thing as ``higher-order self-effects'' even when $W(z,z,z)$ is a constant instead of zero.
+
+Note however that this possibility no longer exists if $W(z,z,z)$ is some nonconstant function of $z$. In that case the extra term does not integrate out to a common factor in Eq.~\ref{eq:HOI_self}, and each species will instead pick up its own density- or frequency-dependent term. Worse, such terms can artificially promote coexistence by providing independent regulation to the species. In such cases, the real reason behind the enhanced coexistence is the presence of that extra self-regulation, and has nothing whatsoever to do with higher-order interactions. One can avoid this spurious confounding of effects by keeping $W(z,z,z)$ either zero (the most principled choice) or a constant (to be then compensated by a common density-dependent term, as detailed above). Our HOI models below all observe this constraint.
+
+\subsection{HOIs as effective pairwise interactions} \label{sec:eff_pair}
+
+The bracketed term of Eq.~\ref{eq:n_spp} has the same structure as the phenotype-level growth rates of Eq.~\ref{eq:pgr_general}. Indeed, we can write $b(u)$ instead of $b_i$, $\alpha(u,u')$ instead of $\alpha_{ij}$, and $\epsilon(u,u',u'')$ instead of $\epsilon_{ijk}$ to emphasize that they could in principle apply at any trait values, not just the $u_i$. Then we can write $N(u)$ instead of $N_i$ for the same reason. This gives
+\begin{equation}
+  \label{eq:n_spp_trait}
+  \frac{\ud N(u)}{\ud t}
+  = N(u) \left[ b(u)
+  - \int \alpha(u,u') N(u') \,\ud u'
+  - \iint \epsilon(u,u',u'') N(u') N(u'') \,\ud u' \ud u'' \right]
+\end{equation}
+in place of Eq.~\ref{eq:n_spp}. $N(u)$ may in principle either form a discrete set of finitely many Dirac deltas, or a continuous distribution. In the former case, integrating by $u$ recovers Eq.~\ref{eq:n_spp}. The difference is that the kernels $\alpha(u,u')$ and $\epsilon(u,u',u'')$ have now been integrated out across the intraspecific trait distributions of the participating species (Eqs.~\ref{eq:alpha_general}-\ref{eq:epsilon_general}). Eq.~\ref{eq:n_spp_trait} may also be written in the form
+\begin{equation}
+  \label{eq:n_spp_alphaeff}
+  \frac{\ud N(u)}{\ud t}
+  = N(u) \left[ b(u)
+  - \int \alpha^{\text{eff}}(u,u') N(u') \,\ud u' \right] ,
+\end{equation}
+where
+\begin{equation}
+  \label{eq:alphaeff}
+  \alpha^{\text{eff}}(u,u')
+  = \alpha(u,u')
+  + \int \epsilon(u,u',u'') N(u'') \,\ud u''
+\end{equation}
+is an effective pairwise interaction kernel. In discrete form, it reads $\alpha_{ij}^{\text{eff}} = \alpha_{ij} + \sum_k \epsilon_{ijk} N_k$. On the surface, Eq.~\ref{eq:n_spp_alphaeff} now looks like a standard pairwise trait-based model, but with a different kernel shape that is composed of the sum of the pairwise and the higher-order terms, the latter summed over all third species taking part in the three-way interaction.
+
+
+\section{Consumer-resource pairwise interaction model (evo)} \label{sec:evo}
+
+In this setting, the per capita growth rates are fully determined by the phenotype $z$ of an individual, irrespective of the species identity. These growth rates are derived from an underlying consumer-resource model \citep{macarthur_packing_1970}. In a standard consumer-resource model, the resource with quality $y$ is always in quasi-equilibrium (fast dynamics compared with the population dynamics of the consumer), so its concentration, $R(y)$, is directly expressible as its maximum level, 
+\begin{equation}
+    \label{req}
+    R(y) = R_0(y)-\sum_{j=1}^S N_j \int u(z',y) p_j(z') \,\text{d} z' ,
+\end{equation}
+where $u(z', y)$ is the degree to which a consumer individual with phenotype $z'$ utilizes resource $y$ and $S$ is the total number of consumer species. The consumer per-capita growth rates then read,
+\begin{equation}
+    \label{cons_eq}
+    r(z) = \int u(z,y) R(y) \,\text{d} y - m(z)  ,
+\end{equation}
+where $m(z)$ is a phenotype-specific mortality. Substituting Eq.~\ref{req} into Eq.~\ref{cons_eq}, we get the standard
+\begin{equation}
+  \label{gauss-rz}
+  r(z) = \underbrace{\int u(z,y) R_0(y) \,\text{d} y - m(z)}_{r_0(z)} - \sum_{j=1}^S N_j \int \underbrace{\left( \int u(z, y) u(z',y) \,\text{d} y\right)}_{a(z,z')} p_j(z') \,\text{d} z' .
+\end{equation}
+The above equation has the Lotka--Volterra form
+\begin{equation}
+  \label{eq:pgr}
+  r(z) = r_0(z) - \sum_{j=1}^S N_j \int a(z,z') p_j(z') \,\ud z' ,
+\end{equation}
+where $r_0(z)$ is the intrinsic growth rate of trait $z$, and $a(z,z')$ is the interaction kernel that captures competition between trait $z$ and $z'$. To determine this kernel, we first specify the resource utilization functions as Gaussian curves:
+\begin{equation}
+  \label{gauss_util}
+  u(z,y) = \sqrt{\frac{2}{\omega \sqrt{\pi}}}\exp\left(-\frac{2(z-y)^2}{\omega^2} \right) .
+\end{equation}
+The kernel $a(z,z')$ is then given by
+\begin{equation}
+\label{gauss_k}
+  a(z, z') = \int u(z, y) u(z',y) \,\text{d} y = \exp \left(-\frac{(z-z')^2}{\omega^2} \right) .
+\end{equation}
+%
+That is, individuals with very similar traits compete strongly whereas individuals that are far apart in trait values $z$ will compete weakly.
+
+We want the intrinsic growth rates $r_0(z)$ in Eq.~\ref{gauss-rz} to be given by a simple rectangular function along the trait axis:
+\begin{equation}
+\label{r_0}
+  r_0(z)= 
+  \begin{cases}
+    1 & \text{if } -\theta \leq z \leq \theta, \\
+    0 & \text{otherwise},
+    \end{cases}
+\end{equation}
+where $\theta$ is the limit of the trait axis such that any individual which has a trait value outside of the range of $[-\theta, \, \theta]$ will have zero growth. This can be achieved with the following parameterization, among others \citep{pastore_evolution_2021, barabas_evolution_2022}: $R_0(y) = (\omega \sqrt{\pi})^{-1/2}$ is constant, and $m(z) = 1$ when $z \in [-\theta, \, \theta]$ and 0 otherwise.
+
+Substituting Eq.~\ref{eq:pgr} into Eqs.~\ref{eq:n}-\ref{eq:m} follows the same structure as Eqs.~\ref{eq:n_spp} and \ref{eq:m_spp}, only with the higher-order terms missing. This means that $\epsilon_{ijk}$ and $\gamma_{ijk}$ are zero, and we only need to obtain the rest of the coefficients (Eqs.~\ref{eq:b_general}, \ref{eq:alpha_general}, \ref{eq:g_general}, and \ref{eq:beta_general}):
+\begin{align}
+  \label{eq:b}
+  b_i &= \frac{1}{2} \left[\text{erf} \left( \frac{\theta- u_{i}}{\sqrt{2}\sigma_{i}} \right) + \text{erf} \left( \frac{\theta+ u_{i}}{\sqrt{2}\sigma_{i}} \right) \right] , \\
+  \label{eq:alpha}
+  \alpha_{ij} &= \frac{\omega}{\sqrt{2\sigma_{i}^2+2\sigma_{j}^2+ \omega^2}} \exp \left(- \frac{(u_{i}- u_{j})^2}{2\sigma_{i}^2+2\sigma_{j}^2+\omega^2} \right) , \\
+  \label{eq:g}
+  g_i &= \frac{\sigma_{i}}{\sqrt{2\pi}}\left[\exp \left( \frac{ -(\theta - u_{i})^2}{2\sigma_{i}^2}\right) - \exp \left( \frac{ -(\theta + u_{i})^2}{2\sigma_{i}^2}\right)\right] , \\
+  \label{eq:beta}
+  \beta_{ij} &= \frac{2\sigma_i^2 (u_j - u_i)}{2\sigma_i^2+2\sigma_j^2 + \omega^2} \alpha_{ij} .
+\end{align}
+In Eq.~\ref{eq:b}, $\text{erf}(\cdot)$ is the error function. In this model, all these quantities could be explicitly integrated out.
+
+
+\section{Consumer-resource higher-order interaction model (evoHOI)}
+
+This model is the same as the previous one (evo), but with trait-mediated higher-order interactions added. The only difference is an extra term in the per capita growth rates of Eq.~\ref{eq:pgr}:
+\begin{equation}
+  \label{pgr_hoi}
+  r(z) = r_0(z) - \sum_{j=1}^S N_j \int a(z,z') p_j(z') \,\ud z' - \sum_{j=1}^{S} \sum_{k=1}^{S}N_{j}N_{k} \iint W(z,z',z'') p_{j}(z') p_{k}(z'') \,\ud z' \ud z'' .
+\end{equation}
+In the last term,
+\begin{equation}
+  \label{eq:epsilon_evoHOI}
+  W(z,z',z'') = \kappa \int u(z,y) u(z', y) u(z'',y) \,\ud y
+\end{equation}
+is the higher-order interaction kernel for individuals with the three traits $z$, $z'$, and $z''$. It is given by the three-way overlap between the resource utilization functions, and is therefore large whenever there is substantial overlap between all three individuals' utilization curves. This means that the higher-order effects exacerbate competition whenever three individuals are adapted to consuming similar resources. The constant $\kappa$ is there to make units consistent.
+
+Eq.~\ref{eq:epsilon_evoHOI} can be integrated out:
+\begin{equation}
+  \label{eq:epsilon_evoHOI_int}
+  W(z,z',z'') = \sqrt{\frac{4\kappa^2}{3 \sqrt{\pi} \omega}} \exp \left(-\frac{(z-z')^2+(z'-z'')^2+(z''-z)^2}{3 \omega^2 / 2}\right) .
+\end{equation}
+Substituting Eq.~\ref{pgr_hoi} into Eqs.~\ref{eq:n}-\ref{eq:m} leads to equations of the form of Eqs.~\ref{eq:n_spp}-\ref{eq:m_spp}. That is, apart from $\epsilon_{ijk}$ and $\gamma_{ijk}$, all integrals are as before (Eqs.~\ref{eq:b}-\ref{eq:beta}). The higher-order terms can also be integrated exactly: from Eq.~\ref{eq:epsilon_general}, we have
+\begin{equation}
+  \label{hoi_kernel}
+  \epsilon_{ijk} = \frac{2 \kappa \omega^2 \exp \left(-\frac{8 \left[\sigma_i^2 (u_j-u_k)^2 + \sigma_j^2 (u_i-u_k)^2 + \sigma_k^2 (u_i-u_j)^2 \right] + 2 \omega^2 \left[(u_i-u_j)^2+(u_k-u_i)^2+(u_j-u_k)^2\right]}{8 \omega^2 \left(\sigma_i^2+\sigma_j^2+\sigma_k^2\right)+16 \left(\sigma_i^2\sigma_j^2+\sigma_i^2\sigma_k^2+\sigma_j^2 \sigma_k^2\right)+3 \omega^4}\right)}{\sqrt[4]{\pi} \sqrt{8 \omega ^3 \left(\sigma_i^2+\sigma_j^2+\sigma_k^2\right)+16 \omega  \left(\sigma_i^2\sigma_j^2+\sigma_i^2\sigma_k^2+\sigma_j^2 \sigma_k^2\right)+3 \omega^5}} ,
+\end{equation}
+and from Eq.~\ref{eq:gamma_general},
+\begin{equation}
+  \label{hoi_kernel_m}
+  \gamma_{ijk} = -4 \sigma_i^2 \frac{4 \sigma_j^2 (\mu_i -\mu_k) + 4 \sigma_k^2 (\mu_i - \mu_j) + \omega^2 (2\mu_i - \mu_j - \mu_k)}{8 \omega^2 \left(\sigma_i^2+\sigma_j^2+\sigma_k^2\right) + 16 \left(\sigma_i^2 \sigma_j^2 + \sigma_i^2 \sigma_k^2 + \sigma_j^2 \sigma_k^2 \right) + 3\omega^4} \epsilon_{ijk} .
+\end{equation}
+
+The most straightforward interpretation of this model is that each species experiences an extra competitive effect due to three-way overlap in resource utilization, as described by Eq.~\ref{eq:epsilon_evoHOI_int}. But following Section~\ref{sec:noself}, one could also write Eq.~\ref{eq:n_spp} by defining $W'(z,z',z'') = W(z,z',z'') - 2\kappa/\sqrt{3\sqrt{\pi} \omega}$ (which is now zero when $z=z'=z''$ and negative otherwise) and adding an extra density-dependent term to compensate:
+\begin{equation}
+  \label{eq:ehoHOI_alt}
+  \frac{\ud N_i}{\ud t}
+  = N_i \left[ b_i
+  - \sum_{j=1}^S \alpha_{ij} N_j
+  - \sqrt{\frac{4\kappa^2}{3 \sqrt{\pi} \omega}}
+    \left( \sum_{j=1}^S N_j \right)^2
+  - \sum_{j=1}^S \sum_{k=1}^S \epsilon'_{ijk} N_j N_k \right] ,
+\end{equation}
+where $\epsilon'_{ijk}$ is the same as Eq.~\ref{hoi_kernel} but with $2\kappa/\sqrt{3\sqrt{\pi} \omega}$ subtracted off from it. Since $W'(z,z',z'')$ is nonpositive, it describes negative competition, or positive effects. Therefore, an alternative interpretation of the evoHOI model is that it is a Lotka--Volterra competition model based on resource overlap, plus an extra density-dependent term, plus a purely mutualistic three-way HOI contribution. The degree of mutualistic support depends on the dissimilarity of the phenotypes: the more dissimilar they are, the more benefit they confer to one another. The model could describe foraging herbivores who compete for food but also provide vigilance against predators, with dissimilar phenotype triplets complementing each other better (and thus conferring better protection) than similar phenotypes.
+
+
+\section{The hierarchical pairwise model (hier)}
+
+Before we delve into the model details, we cite the following general integral formula \citep[integral 4.3.13]{ng_geller_integrals_1968}:
+\begin{equation}
+  \label{hier:erf}
+  \int \text{erf}(z) \exp[-(az+b)^2] \,\text{d} z = -\frac{\sqrt{\pi}}{a} \text{erf} \left( \frac{b}{\sqrt{a^2 + 1}} \right) ,
+\end{equation}
+which, after a simple substitution of variables, reads
+\begin{equation}
+\label{hier:erf_2}
+\int \text{erf}(cz+d) \exp[-(az+b)^2] \,\text{d} z
+= \frac{\sqrt{\pi}}{a} \text{erf} \left( \frac{ad - bc}{\sqrt{a^2 + c^2}} \right) .
+\end{equation} 
+We can reparameterize this as 
+\begin{equation}
+\label{hier:erf_3}
+\int \text{erf}\left(\frac{cz-z_0}{\omega}\right)
+\exp \left(-\frac{(z-u)^2}{2\sigma^2} \right) \,\text{d} z
+= \sqrt{2\pi}\sigma \, \text{erf}\left( \frac{cu-z'}{\sqrt{\omega^2+2\sigma^2c^2}}\right) .
+\end{equation}
+Using the normal trait distribution $p_i(z)$ (Eq.~\ref{eq:p}), we can rewrite Eq.~\ref{hier:erf_3} as 
+\begin{equation}
+\int \text{erf}\left(\frac{cz-z_0}{\omega}\right) p_i(z) \,\text{d} z
+= \text{erf}\left( \frac{cu_i-z_0}{\sqrt{\omega^2+2\sigma_i^2c^2}}\right) .
+\end{equation}
+We now define a sigmoid interaction function as
+\begin{equation}
+  \label{sigmoid}
+  a(z,\omega) = \frac{1}{2} \left[ \text{erf} \left( \frac{z}{\omega} \right) + 1 \right] .
+\end{equation}  
+This can be thought of as the convolution of the Heaviside
+step function with a Gaussian of width $\omega$, which smooths out the
+infinitely sharp transition. Integrating this function together with the trait distribution $p_i(z)$, the result again has the form of $a$, but with a different point of transition and with a wider curve:
+\begin{equation}
+\begin{aligned}
+  \label{hier:alpha_minor}
+  \int a(cz-z', \omega) p(z) \,\text{d} z &= \frac{1}{2}\left[ \int \text{erf}\left(\frac{cz-z'}{\omega}\right) p(z) \,\text{d} z + \int p(z) \,\text{d}z \right] \\ &= \frac{1}{2} \left[ \text{erf}\left( \frac{cu_i-z'}{\sqrt{\omega^2+2\sigma^2c^2}} \right) + 1 \right] \\ &= a(cu-z',\sqrt{\omega^2+2\sigma^2c^2}) ,
+\end{aligned}
+\end{equation}
+where we used the fact that $\int p(z) \,\text{d} z = 1$
+due to normalization.
+
+Introducing the above integrals will allow us to further expand on the hierachical trait-based model. The sigmoid function of Eq.~\ref{sigmoid}, written as $a(z-z',\omega)$, is a general trait-based interaction function measuring the effect of phenotype $z'$ on $z$ that we will use in this hierachical competition model. This now allows us to explicitly integrate all the ingredient functions of the quantitative genetic Lotka--Volterra model, given equation Eq.~\ref{eq:pgr} as the per-capita growth rate of a phenotype $z$, with Eq.~\ref{sigmoid} as the hierachical interaction kernel. The intrinsic growth rates are chosen such that phenotypes lower in the competitive hierarchy (represented by larger values of $z$) have higher growth rates:
+\begin{equation}
+  \label{hier:r_0}
+  r_0(z) = 1 - \exp(- z/\theta) .
+\end{equation}
+Given that we now have $r_0(z)$ and $a(z-z',\omega)$ at hand, and assuming $W(z,z',z'')=0$ so that higher-order interactions are absent, we use Eqs.~\ref{eq:b_general}-\ref{eq:alpha_general} to express the ecological dynamics. When computing $\alpha_{ij}$ below, we apply Eq.~\ref{hier:alpha_minor} twice, with $c = 1$:
+\begin{align}
+  \label{hier:avgg}
+  b_i
+  &= \int r_0(z) p_i(z) \,\ud z
+  = 1 - \exp\left(\frac{\sigma_i^2}{2\theta^2}
+  - \frac{u_i}{\theta} \right) ,
+  \\
+  \label{hier:alpha}
+  \alpha_{ij}
+  &= \iint a(z-z',\omega) p_i(z) p_j(z') \,\text{d} z' \,\text{d} z
+  = \int p_i(z) \left[ \int a(z-z',\omega) p_j(z')
+  \,\text{d} z' \right]  \text{d}z
+  \\ \nonumber
+  &= \int p_i(z) \,a\left(z-u_j,\sqrt{\omega^2+2\sigma_j^2}\right) \text{d}z
+  = a\left(u_i-u_j,\sqrt{\omega^2+2\sigma_i^2+2\sigma_j^2}\right)
+  \\ \nonumber
+  &= \frac{1}{2} \left[ \text{erf} \left(
+  \frac{u_i-u_j}{\sqrt{\omega^2+2\sigma_i^2+2\sigma_j^2}} \right) + 1\right] .
+\end{align}
+These expressions are then substituted into Eq.~\ref{eq:n_spp} to obtain the dynamics of $N_i$.
+
+Turning to the equation for the evolutionary dynamics of trait means, we first use Eq.~\ref{eq:g_general} to obtain
+\begin{equation}
+  \label{hier:evogr}
+  g_i = \int (z - u_i) b(z) p_i(z) \,\ud z
+  = \frac{\sigma_i^2}{\theta} \exp\left(\frac{\sigma_i^2}{2\theta^2} - \frac{u_i}{\theta} \right) ,
+\end{equation}
+and then Eq.~\ref{eq:beta_general} to calculate $\beta_{ij}$. This has an inner integral that is the same as before in Eq.~\ref{hier:alpha}, and so we can write
+\begin{equation}
+  \label{hier:beta}
+  \begin{aligned}
+  \beta_{ij} &= \iint (z - u_i) a(z-z',\omega) p_i(z) p_j(z')
+  \,\ud z' \,\ud z
+  \\ &= \int (z-u_i)p_i(z)\left[\int a(z-z',\omega) p_j(z')
+  \,\ud z' \right] \ud z
+  \\ &= \int (z-u_i) p_i(z)\,a\left(z-u_j,\sqrt{\omega^2+2\sigma_j^2}
+  \right) \, \ud z .
+  \end{aligned}
+\end{equation}
+To evaluate this integral, we recognize that $(z-u_i) p_i(z) = -\sigma_i^2 p_i'(z)$, where $p_i'(z)$ is the derivative of $p_i(z)$ with respect to $z$. So we have
+\begin{equation}
+\beta_{ij} = -\sigma_i^2 \int p_i'(z) \,a\left(z-u_j,
+\sqrt{\omega^2+2\sigma_j^2}\right) \,\ud z .
+\end{equation}
+Integrating by parts, we get
+\begin{equation}
+\begin{aligned}
+\beta_{ij} = &-\sigma_i^2 \left[
+p_i(z) \,a\left(z-u_j,\sqrt{\omega^2+2\sigma_j^2}\right) \right]_{-\infty}^{\infty}
+\\ &+ \sigma_i^2 \int p_i(z) \,a'\left(z-u_j,\sqrt{\omega^2+2\sigma_j^2}\right)
+\,\ud z ,
+\end{aligned}
+\end{equation} 
+where we take the derivative of $a$ with respect to $z$. The first term is the product of a Gaussian and a sigmoid function, which vanishes at infinity---this term is therefore zero. In the second term, we can use the fact that the derivative of the error function is Gaussian, and the product of two Gaussians can be integrated: 
+\begin{equation}    
+\begin{aligned}
+\label{hier:beta_2}
+\beta_{ij} &= \sigma_i^2 \int p_i(z) \,a'\left(z-u_j,\sqrt{\omega^2+2\sigma_j^2}
+\right) \, \ud z
+\\ &= \frac{1}{\sqrt{\pi(\omega^2 + 2\sigma_j^2)}} \int p_i(z)
+\exp\left(-\frac{(z-u_j)^2}{\omega^2 + 2\sigma_j^2}\right) \,\ud z
+\\ &= \frac{\sigma_i^2}{\sqrt{\pi(\omega^2 + 2\sigma_i^2 + 2\sigma_j^2)}}
+\exp\left(-\frac{(u_i-u_j)^2}{\omega^2 + 2\sigma_i^2 + 2\sigma_j^2}\right) .
+\end{aligned}
+\end{equation}
+The dynamics of the trait means then follow Eq.~\ref{eq:m_spp}, where $g_i$ is given by Eq.~\ref{hier:evogr} and $\beta_{ij}$ by Eq.~\ref{hier:beta_2}.
+
+
+\section{The hierarchical trait-based higher-order model (hierHOI)}
+
+Including higher-order phenotypic interactions amounts to adding an extra term to the per capita growth rate: 
+\begin{equation}
+  \begin{aligned}
+  \label{hierhoi:pgr}
+  r(z)
+  = r_0(z) &- \sum_{j=1}^S N_j \int a(z-z',\omega) p_j(z') \,\ud z'
+  \\ &- \sum_{j=1}^S \sum_{k=1}^S N_j N_k \iint Wz,z',z'') p_j(z') p_k(z'')
+  \,\ud z' \,\ud z'' ,
+  \end{aligned}
+\end{equation}
+where $Wz,z',z'')$ is a kernel mediating three-way interactions between the phenotypes $z$, $z'$, and $z''$. The hierarchical higher-order interaction kernel is chosen to be
+\begin{equation}   
+  \label{hierhoi:intkernel}
+  Wz,z',z'')
+  = \frac{\kappa}{2} \left[
+  \text{erf} \left( \frac{z_0 + z-(z'+z'')/2}{\Omega}\right) + 1 \right]
+  = \kappa a(z_0+z-(z'+z'')/2, \Omega) ,
+\end{equation}
+where $\Omega$ is the width of this higher-order kernel, $z_0$ is an offset measuring the trait difference from $z$ where higher-order effects start to proliferate, and $\kappa$ is a constant.
+
+All terms in Eqs.~\ref{eq:n_spp}-\ref{eq:m_spp} have already been calculated in the section above, except for $\epsilon_{ijk}$ and $\gamma_{ijk}$. The former (Eq.~\ref{eq:epsilon_general}) can be obtained by repeated application of Eq.~\ref{hier:alpha_minor}:
+\begin{equation}
+  \label{hierhoi:epsilon}
+  \begin{aligned}
+  \epsilon_{ijk}
+  &= \kappa a\left( z_0 + u_i - \frac{u_j + u_k}{2},
+  \sqrt{\Omega^2 + 2\sigma_i^2 + \sigma_j^2/2 + \sigma_k^2/2} \right)
+  \\
+  &= \frac{\kappa}{2} \left[ \text{erf} \left(
+  \frac{z_0+u_i-(u_j+u_k)/2}{\sqrt{\Omega^2+2\sigma_i^2+
+  \sigma_j^2/2+\sigma_k^2/2}}\right) + 1 \right] .
+  \end{aligned}
+\end{equation}
+In turn, $\gamma_{ijk}$ evaluates to
+\begin{equation}
+  \label{hierhoi:gamma_ijk}
+  \begin{aligned}
+  \gamma_{ijk}
+  &= \kappa \iiint (z - u_i) a(z_0+z-(z'+z'')/2,\Omega)
+  p_i(z) p_j(z') p_k(z'') \,\ud z'' \ud z' \ud z
+  \\
+  &= \kappa \int (z - u_i) \, a\left(z_0+z-(u_j+u_k)/2,
+  \sqrt{\Omega^2+\sigma_j^2/2+\sigma_k^2/2}\right) p_i(z) \,\ud z ,
+  \end{aligned}
+\end{equation}
+after which we apply the same strategy of integration by parts that was used for $\beta_{ij}$ earlier:
+\begin{equation}
+  \gamma_{ijk} = \frac{\kappa \sigma_i^2}{\sqrt{
+  \pi(\Omega^2+2\sigma_i^2+\sigma_j^2/2+\sigma_k^2/2)}}
+  \exp \left( -\frac{(z_0+u_i-(u_j+u_k)/2)^2}{
+  \Omega^2+2\sigma_i^2+\sigma_j^2/2+\sigma_k^2/2}\right) .
+\end{equation}
+
+
+\section{Numerical integration}
+
+We used the \texttt{deSolve} and \texttt{rootSolve} packages in R \citep{r_core_team_r_2022} for numerical integration. In doing so, we proceeded in two steps. First we integrated using the backward difference method in \texttt{deSolve}'s \texttt{ode} function, for $10^{14}$ time units. Afterwards, to make sure about convergence, we used the final state of the time integration and used the \texttt{runsteady} function from the \texttt{rootSolve} package to integrate until all $|\ud N_i / \ud t|$ and $|\ud u_i / \ud t|$ dropped below $10^{-16}$, indicating that the dynamics have converged to a fixed point. (Note: this was the case for all parameterizations in every model; we never observed eco-evolutionary cycles or chaos.)
+
+Our model has no demographic stochasticity. This introduces the artifact that population densities can drop to arbitrarily low values and still undergo evolutionary rescue (an unrealistically tiny population evolves to the point where it can finally grow, thus surviving and establishing itself even though it was bound to go extinct). To control for this, we apply a weak Allee effect to population growth and a reduction of heritability whenever population densities are very low. We introduce
+\begin{equation}
+  \label{eq:cutoff}
+  Q(x) = \begin{cases}
+    \begin{array}{ll}
+      0 & \text{if~} x < 0 \\
+      10x^3-15x^4+6x^5 & \text{if~} 0 \le x \le 1 \\
+      1 & \text{if~} x > 1
+    \end{array}
+  \end{cases}
+\end{equation}
+\citep{akesson_importance_2021}, a smooth sigmoid function which is 0 for $x < 0$, increases monotonically to one between $0 \le x \le 1$, and remains at $1$ for $x > 1$ (Figure~\ref{fig:smoothstep}). Using this function, we modify the basic dynamical equations (Eqs.~\ref{eq:n}-\ref{eq:m}) as follows:%Below this threshold, genetic variances were multiplied by a factor $Q(N_i^k/N_c)$, where
+\begin{equation}
+  \label{eq:n-mod}
+  \frac{\ud N_i}{\ud t} = Q(N_i / 10^{-6}) \, N_i \int r(z) p_i(z) \,\ud z ,
+\end{equation}
+\begin{equation}
+  \label{eq:m-mod}
+   \frac{\ud u_i}{\ud t} = Q(N_i / 10^{-5}) \, h_i^2 \int (z-u_i) r(z) p_i(z) \,\ud z .
+\end{equation}
+That is, the right hand sides are multiplied by a factor which smoothly decreases towards zero once $N_i$ gets below $10^{-6}$ and $10^{-5}$, respectively.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.45\textwidth]{smoothstep.pdf}
+  \caption{The smoothed step function $Q(x)$, defined by Eq.~\ref{eq:cutoff}. It is piecewise polynomial, and twice continuously differentiable everywhere.}
+  \label{fig:smoothstep}
+\end{figure}
+
+
+\section{Random structured HOIs: intraHOI}
+
+We also consider a version of the model which follows Section~\ref{sec:evo}, but with $\epsilon_{ijk}$ not set to zero. Instead, they are sampled from a random uniform distribution in a way such that $\epsilon_{iij} > \epsilon_{ijk}$. In other words, intraspecific HOIs are greater than interspecific HOIs. We still assume that $\gamma_{ijk} = 0$ in this model, so the HOI terms only exert ecological but not evolutionary influence. We call this HOI model intraHOI, and evaluate the case when such a structure of random HOIs impact coexistence and trait patterning (Figures~\ref{fig:intrahoi-div}-\ref{fig:intrahoi-clust}).
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{intraHOI-diversity.pdf}
+  \caption{Species diversity (measured by the inverse Simpson index) in the intraHOI model where HOI coefficients were randomly generated by a specific structure such that intraspecific HOIs were greater in strength than interspecific HOIs. We observe trait clustering and higher diversity across different levels of $\omega$.}
+  \label{fig:intrahoi-div}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{intraHOI-clustering.pdf}
+  \caption{Species clustering in intraHOI model where HOI coefficients were randomly generated by a specific structure such that intraspecific HOIs were greater in strength than interspecific HOIs. In that case we do observe high amount of trait clustering across different levels of $\omega$ and three different levels of individual variation.}
+  \label{fig:intrahoi-clust}
+\end{figure}
+
+
+\section{Community matrix, stability, and robustness of species coexistence}
+
+The Jacobian matrix $J_{il}$ of the ecological part of the system is given by
+\begin{equation}
+  \label{jacobian}
+  J_{il} = \frac{\partial (\ud N_{i} / \ud t)} {\partial N_{l}}.
+\end{equation}
+The ecological dynamics follow Eq.~\ref{eq:n_spp}. Taking the partial derivative of its right hand side by $N_l$:
+\begin{equation}
+   \label{jacobian_explicit}
+   \begin{split}
+   \frac{\partial (\ud N_{i} / \ud t)} {\partial N_{l}} = J_{il}
+   &= \delta_{il} \left( b_{i} - \sum_{j=1}^{S} \alpha_{ij}N_{j}- \sum_{j=1}^{S} \sum_{k=1}^{S}\epsilon_{ijk}N_{j}N_{k} \right)
+   \\ &- N_{i} \sum_{j=1}^S \alpha_{ij} \delta_{jl}
+   - N_{i} \sum_{j=1}^S \sum_{k=1}^{S} \left( \epsilon_{ijk} N_j \delta_{kl} + \epsilon_{ijk} N_k \delta_{jl} \right) ,
+   \end{split}
+\end{equation}
+where $\delta_{ij}$ is the Kronecker delta ($\delta_{ij} = 1$ if $i=j$ and $0$ otherwise).
+
+The term multiplying $\delta_{il}$ in the first term is the per capita growth rate of species $i$ (Eq.~\ref{eq:n_spp}). When evaluating $J_{il}$ at equilibrium, this term is zero for all persisting species. What we are left with is
+\begin{equation}
+  \label{community_matrix_simpler}
+   A_{il} = - N_{i} \sum_{j=1}^S \alpha_{ij} \delta_{jl}
+   - N_{i} \sum_{j=1}^S \sum_{k=1}^{S} \left( \epsilon_{ijk} N_j \delta_{kl} + \epsilon_{ijk} N_k \delta_{jl} \right),
+\end{equation}
+where $A_{ij}$ is $J_{ij}$ evaluated equilibrium---in other words, $A_{ij}$ is the community matrix \citep{may_qualitative_1973}. We can simplify this further, by performing summations with the use of the Kronecker deltas and relabeling the summation index $k$ to $j$ in the last term:
+\begin{equation}
+  \label{community_matrix}
+   A_{il} = - N_{i}\alpha_{il}- N_{i} \sum_{j=1}^{S} \left( \epsilon_{ijl} + \epsilon_{ilj} \right) N_j .
+\end{equation}
+Eq.~\ref{community_matrix} incorporates higher-order three-way interactions on top of the ``usual'' community matrix arising from pairwise interactions. One can then calculate the eigenvalues of this community matrix and use them to determine community stability and the robustness of species coexistence at equilibrium.
+
+If the eigenvalues of $A_{il}$ all have negative real parts, then the community is at a locally stable point. This means that any perturbation of the population densities at that point will decay exponentially along its eigendirection with a rate equal to the eigenvalue. The robustness of this coexistence can be calculated from the geometric mean of the eigenvalues' magnitudes \citep{barabas_effect_2016-3}:
+\begin{equation}
+  \sqrt[S]{ |\lambda_{1}||\lambda_{2}|...|\lambda_{S}|} = \left( \prod_{i=1}^{S} |\lambda_{i}| \right)^\frac{1}{S} = \exp\left(\frac{1}{S}\log\left(\prod_{i=1}^{S} |\lambda_{i}|\right)\right) = \exp \left(\frac{1}{S} \sum_{i=1}^S \log(|\lambda_i|) \right) = \exp(\overline{\log(|\lambda|})) ,
+\end{equation}
+where the overbar denotes arithmetic averaging.
+
+
+\newpage
+
+\section{Ecological impacts of trait variation on species richness}
+
+Here, we present the expected ecological impact of trait variation on species richness. To this end, we make certain assumptions. One is that species heritability is zero and all species have the same trait standard deviation of $\sigma$. Previous studies have indicated that the number of species coexisting in a Lotka--Volterra model without intraspecific trait variation is proportional to inverse of the competition width, which in our pairwise Lotka--Volterra model is $\omega$ \citep{barabas_effect_2016,macarthur_limiting_1967}. Similarly, for a hierarchical trait-based model, the number of surviving species at the very end and the spacing between them is also proportional to the parameter $\omega$ which captures how smoothly the hierarchical competition function transitions from dominant competitors to weaker competitors in terms of their trait values. 
+
+If all intraspecific trait widths are equal, the pairwise interaction coefficients $\alpha_{ij}$ of the evo and evoHOI models are given by Eq.~\ref{eq:alpha} after setting all $\sigma_i \equiv \sigma$:
+\begin{equation}
+  \alpha_{ij}
+  = \frac{\omega}{\sqrt{4\sigma^2+\omega^2}}
+  \exp\left(-\frac{(u_i-u_j)^2}{4\sigma^2 + \omega^2}\right) .
+  \label{eq:alpha_itv}
+\end{equation}
+In the absence of intraspecific variation ($\sigma = 0$), this reduces further to
+\begin{equation}
+  \alpha_{ij}
+  = \exp\left(-\frac{(u_i-u_j)^2}{\omega^2}\right) .
+  \label{eq:alpha_noitv}
+\end{equation}
+For the hier and hierHOI models, similarly, the pairwise competition with a constant $\sigma_i \equiv \sigma$ can be written by simplifying Eq.~\ref{hier:alpha}:
+\begin{equation}
+  \alpha_{ij}
+  = \frac{1}{2} \left[ \text{erf} \left(
+  \frac{u_i-u_j}{\sqrt{\omega^2 + 4\sigma^2)}} \right) + 1\right] .
+  \label{eq:alpha_itv_hier}
+\end{equation}
+Without any intraspecific variation at all, this reads
+\begin{equation}
+  \alpha_{ij}
+  = \frac{1}{2} \left[ \text{erf} \left(
+  \frac{u_i-u_j}{\omega} \right) + 1\right] .
+  \label{eq:alpha_noitv_hier}
+\end{equation}
+
+In pairwise trait-based models, the average gap between adjacent species is proportional to the width of the interaction kernel \citep{macarthur_limiting_1967, szabo_limiting_2006, barabas_when_2009, barabas_continuous_2012, dandrea_revising_2013, barabas_effect_2016}. Consequently, species richness (number of species surviving) is inversely proportional to this width. Thus, if $S^{*}$ is the species richness without trait variation, then for both the eco and hier models,
+\begin{equation}
+  S^{*}
+  \propto \frac{1}{\omega} .
+\end{equation}
+With intraspecific trait variation that is equal across species, the new competition width is $\sqrt{4\sigma^2+\omega^2}$ instead of $\omega$ (Eqs.~\ref{eq:alpha_itv}, \ref{eq:alpha_itv_hier}). So in the presence of trait variation, the spacing between surviving species is proportional to $\sqrt{4\sigma^2+\omega^2}$. Thus, if $S$ is the species richness with trait variation, then the expected predicted ratio of species richness with trait variation to species richness without can be written as
+\begin{equation}
+  \label{predict_rich}
+  \frac{S}{S^{*}}
+  = \frac{\omega}{\sqrt{4\sigma^2+\omega^2}}
+\end{equation}
+Figure \ref{fig:richness_itv} shows this ratio as a function of trait standard deviation $\sigma$, as predicted by equation \ref{predict_rich} and as by model simulations of the pairwise evo and hier models, with the heritabilities of all species set to zero. As seen, the theoretical curve does a good job predicting the actual ratio of species richnesses.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.99\textwidth]{richness_itv_no_itv.pdf}
+  \caption{Ratio of species richness with trait variation to without trait variation (y-axis), plotted against trait standard deviation (x-axis) for two levels of competition widths: $\omega=0.1$ and $\omega = 0.2$ (panels) and for two different models of pairwise competition, evo and hier (side-by-side plots). Points denote simulations of the model, while the line denotes analytical prediction based on the derivation in the supplementary section 9. The figure illustrates the negative ecological effects of trait variation on species richness.}
+  \label{fig:richness_itv}
+\end{figure}
+
+Comparing Eqs.~\ref{eq:alpha_itv} and \ref{eq:alpha_noitv}, we see that the evo model with intraspecific variation can be usefully thought of as a model without variation, but with a wider Gaussian kernel. Doing the same comparison for the hier model leads to the same conclusion, except it is now the sigmoid function that becomes wider (Eqs.~\ref{eq:alpha_itv_hier} and \ref{eq:alpha_noitv_hier}; Figure~\ref{fig:hiereffect}). Even more generally, we see that intraspecific variation will always have a smoothing-out effect on any interaction kernel, due to the convolution of the kernel with the Gaussian trait distributions in Eqs.~\ref{eq:alpha_general}-\ref{eq:epsilon_general}. Consequently, the main effect of increasing intraspecific trait variation is always to broaden the species-level interaction kernel and therefore limit the number of coexisting species by increasing the average space between them \citep{barabas_effect_2016}.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{hier_comp_effect.pdf}
+  \caption{Competitive effect faced by species in the hierHOI model as a function of trait distance, with $\sigma_i^2 = 0$ (left panel) and $\sigma_i^2 = 0.1$ (right panel). The curves show the shape of the pairwise part of the interaction kernel (yellow), the higher-order part (green), and their sum (blue). Intraspecific variation smooths out both the pairwise and higher-order kernels---and as a consequence, their sum as well. Other parameters: $\omega = 0.5$, $\Omega = 0.01$, $\kappa = 1$.}
+  \label{fig:hiereffect}
+\end{figure}
+
+
+\section{Thinking of trait-based HOIs as effective pairwise interactions}
+
+Here we explore the idea from the main text that is inspired by the form of the effective interaction kernel in Eq.~\ref{eq:alphaeff}: that a trait-based HOI model can usefully be thought of as an effective pairwise model in which the characteristic distance between adjacent species is proportional to the width of an effective interaction kernel. This kernel is in turn approximated as the sum of the kernel shapes for the pairwise and the HOI effects.
+
+As a first step, we check whether the HOI kernel in fact behaves as one would expect; namely, that the larger its width is, the larger the spacing becomes between adjacent coexisting species and thus diversity is roughly proportional to the inverse of this width. To do this, we must isolate the HOI effects, which we do by creating a version of our models in which pairwise effects are switched off: $a(z,z') = 0$. This eliminates any purely pairwise effects from Eq.~\ref{eq:n_spp} by setting $\alpha_{ij} = 0$, so species only interact via higher-order terms. For additional simplicity we also set all heritabilities $h_i^2$ to zero---this way we only look at the ecological part of the dynamics and do not have to worry about potential confounding effects of evolution. We then reformulated Eq.~\ref{hoi_kernel} as
+\begin{equation}
+  \label{eq:hoi_kernel_widen}
+  \epsilon_{ijk} = \frac{2 \kappa \omega^2 \exp \left(-\frac{8 \left[\sigma_i^2 (u_j-u_k)^2 + \sigma_j^2 (u_i-u_k)^2 + \sigma_k^2 (u_i-u_j)^2 \right] + 2 \omega^2 \left[(u_i-u_j)^2+(u_k-u_i)^2+(u_j-u_k)^2\right]}{8 \omega^2 \left(\sigma_i^2+\sigma_j^2+\sigma_k^2\right)+16 \left(\sigma_i^2\sigma_j^2+\sigma_i^2\sigma_k^2+\sigma_j^2 \sigma_k^2\right)+3 \omega^4 + \Omega^2}\right)}{\sqrt[4]{\pi} \sqrt{8 \omega ^3 \left(\sigma_i^2+\sigma_j^2+\sigma_k^2\right)+16 \omega  \left(\sigma_i^2\sigma_j^2+\sigma_i^2\sigma_k^2+\sigma_j^2 \sigma_k^2\right)+3 \omega^5 + \Omega^2}} ,
+\end{equation}
+where the only difference is the addition of $\Omega^2$ in the denominator of the exponent and under the radical (this is what one would get by adding a constant to the utilization width). The corresponding Eq.~\ref{hierhoi:epsilon} for the hierHOI model remains unchanged, because that one already depends on $\Omega$. Now we can increase $\Omega$ from zero to larger values, which will broaden the higher-order interaction kernels. For each value of $\Omega$, we performed 10 replicate simulations and recorded the minimum, mean, and maximum diversity. The results are in Figure~\ref{fig:wideninghoi}. As seen, the models with only HOIs behave just as one would expect from pairwise models: diversity is inversely proportional to the extra width added to the kernels.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{widening.pdf}
+  \caption{Increasing the widths of evoHOI (left) and hierHOI (right) higher-order kernels, and their impact on overall species diversity (measured by the inverse Simpson index). Here, pairwise interactions and evolutionary dynamics are eliminated by setting the pairwise kernel $a(z,z')$ and the heritabilities $h_i^2$ to zero. All other parameters are as in Table~1 from the main text (with low individual variation).}
+  \label{fig:wideninghoi}
+\end{figure}
+
+After this first step, we next switch pairwise interactions back on and check whether the model outcomes can usefully be interpreted in light of the effective, summed interaction kernels. To see wether we can do so, we make serious simplifications to remove any potential confounding factors. We set all $\sigma_i$ and $h_i^2$ to zero, thus eliminating intraspecific variation and evolution. Furthermore, we intentionally tweak the higher-order interaction kernel from its actual form in Eq.~\ref{hoi_kernel} to be able to manipulate its width $\Omega$ independently of the pairwise width $\omega$. At the species level, this results in the following interaction coefficients:
+\begin{align}
+\alpha_{ij}
+&= \exp\left(-\frac{(u_i - u_j)^2}{\omega^2}\right)
+& \text{(Eq.~\ref{eq:alpha} with $\sigma_i=0$)},
+\label{eq-evo-alpha-rigged}
+\\
+\epsilon_{ijk}
+&= \kappa \exp\left(-\frac{2 \omega^2 \left[(u_i-u_j)^2+(u_k-u_i)^2
++ (u_j-u_k)^2\right]}{\Omega^2} \right)
+& \text{(simplified Eq.~\ref{hoi_kernel} with $\sigma_i=0$)},
+\label{eq-evo-epsilon-rigged}
+\\
+\alpha_{ij}
+&= \frac{1}{2} \left[ \text{erf}
+\left( \frac{u_i-u_j}{\omega} \right) + 1\right] ,
+& \text{(Eq.~\ref{hier:alpha} with $\sigma_i = 0$)},
+\label{eq-hier-alpha-rigged}
+\\
+\epsilon_{ijk}
+&= \frac{\kappa}{2} \left[ \text{erf}
+\left( \frac{z_0+u_i-(u_j+u_k)/2}{\Omega} \right) + 1 \right]
+& \text{(Eq.~\ref{hierhoi:epsilon} with $\sigma_i = 0$)},
+\label{eq-hier-epsilon-rigged}
+\end{align}
+This way the height and width of the pairwise kernels are 1 and $\omega$, while those of the HOI kernels are $\kappa$ and $\Omega$, respectively. We now therefore have the ability to adjust them independently. We initialize every simulation below with 41 species of density 1 and trait $u_i$ (which are now non-evolving and therefore constant) evenly spaced in the range $[-0.5, \, 0.5]$ for evo/evoHOI and in $[0, \, 2]$ for hier/hierHOI.
+
+\clearpage
+
+\paragraph{Scenario 1: $\bm{\Omega < \omega}$ implies that HOIs will not contribute to diversity.}
+The reason is that, since the pairwise kernel is broader, it already dictates the expected spacing between adjacent species. Adding a narrower HOI kernel to this will not change the effective width of their sum. Indeed, when we run the evoHOI and hierHOI models with $\omega$ twice as large as $\Omega$, they end up almost identically to the corresponding models without HOIs (Figures~\ref{fig:scen-1-evo}-\ref{fig:scen-1-hier}).
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-1-evo.pdf}
+  \caption{The middle panel, like Figure~\ref{fig:hiereffect}, depicts the shape of the pairwise part of the interaction kernel (yellow), the higher-order part (green), and their sum (blue). Since the width of the sum is visibly that of the wider pairwise kernel, we do not expect HOIs to contribute to coexistence---and they don't. The left left panel shows the final state of a community with only pairwise effects; the right panel is the final state with HOIs. Parameters: $\omega = 0.3$, $\Omega = 0.15$, $\kappa = 0.2$.}
+  \label{fig:scen-1-evo}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-1-hier.pdf}
+  \caption{As Figure~\ref{fig:scen-1-evo}, but with the hier and hierHOI models. Parameters: $\omega = 0.3$, $\Omega = 0.15$, and $\kappa = 0.2$.}
+  \label{fig:scen-1-hier}
+\end{figure}
+
+\clearpage
+
+\paragraph{Scenario 2: $\bm{\Omega > \omega$} means that HOIs lead to diversity reduction.}
+Now the full HOI model's kernel is broader than that of the corresponding pairwise model. Consequently, the average distance between adjacent species will also become larger in the presence of HOIs, and so we expect fewer species to survive. This is just what we observe (Figures~\ref{fig:scen-2-evo}-\ref{fig:scen-2-hier}).
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-2-evo.pdf}
+  \caption{As Figure~\ref{fig:scen-1-evo}, but with $\omega = 0.2$, $\Omega = 0.4$, $\kappa = 0.5$.}
+  \label{fig:scen-2-evo}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-2-hier.pdf}
+  \caption{As Figure~\ref{fig:scen-1-hier}, but with $\omega = 0.25$, $\Omega = 0.5$, $\kappa = 5$.}
+  \label{fig:scen-2-hier}
+\end{figure}
+
+\clearpage
+
+\paragraph{Scenario 3: $\bm{\Omega \gg \omega}$ means that HOIs no longer influence diversity.}
+This might sound strange, since in Scenario 2 we saw that $\Omega > \omega$ leads to a reduction in diversity. But when $\Omega$ is very large, the HOI kernel becomes effectively a constant across the relevant range of the trait axis (Figures~\ref{fig:scen-3-evo}-\ref{fig:scen-3-hier}). The width of the sum is therefore unaffected; all that happens is that the pairwise contribution is shifted vertically by a constant.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-3-evo.pdf}
+  \caption{As Figure~\ref{fig:scen-1-evo}, but with $\omega = 0.4$, $\Omega = 1.5$, $\kappa = 0.2$.}
+  \label{fig:scen-3-evo}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-3-hier.pdf}
+  \caption{As Figure~\ref{fig:scen-1-hier}, but with $\omega = 0.4$, $\Omega = 3$, $\kappa = 0.2$.}
+  \label{fig:scen-3-hier}
+\end{figure}
+
+\clearpage
+
+\paragraph{Scenario 4: $\bm{\Omega \ll \omega}$ means that HOIs increase diversity.}
+Scenario 1 discussed the case of $\Omega < \omega$ and concluded that this does not affect diversity. How can things change then by reducing $\Omega$ even further? The answer is that when the two kernel widths are no longer comparable, we introduce two scales: a wide one and a narrow one. For the evoHOI model, since the wide kernel is approximately constant on the scale where the narrow one changes, we expect several species to coexist in clumps \citep{barabas_emergent_2013, dandrea_challenges_2016}. This is just what we observe in Figure~\ref{fig:scen-4-evo}, where $\Omega$ is more than an order of magnitude smaller than $\omega$. Conversely, for hierHOI, the sum of a wide and a very narrow sigmoid curve results in a sigmoid that itself transitions from low to high values very abruptly (Figure~\ref{fig:scen-4-hier}). We thus expect---and get---more diversity than without the higher-order effects.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-4-evo.pdf}
+  \caption{As Figure~\ref{fig:scen-1-evo}, but with $\omega = 0.4$, $\Omega = 0.01$, $\kappa = 0.2$.}
+  \label{fig:scen-4-evo}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\textwidth]{scen-4-hier.pdf}
+  \caption{As Figure~\ref{fig:scen-1-hier}, but with $\omega = 0.8$, $\Omega = 0.01$, $\kappa = 5$.}
+  \label{fig:scen-4-hier}
+\end{figure}
+
+
+\clearpage
+
+%\bibliographystyle{besjournals-jr.bst}
+%\bibliography{lib}
+\begin{thebibliography}{18}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Barab{\'a}s \& D'Andrea(2016)}]{barabas_effect_2016}
+Barab{\'a}s, G. \& D'Andrea, R. (2016) The effect of intraspecific variation
+  and heritability on community pattern and robustness. \emph{Ecology Letters}
+  \textbf{19}, 977--986.
+
+\bibitem[{Barab\'{a}s \emph{et~al.}(2013)Barab\'{a}s, {D'Andrea}, Rael,
+  Mesz{\'e}na \& Ostling}]{barabas_emergent_2013}
+Barab\'{a}s, G., {D'Andrea}, R., Rael, R., Mesz{\'e}na, G. \& Ostling, A.
+  (2013) Emergent neutrality or hidden niches? \emph{Oikos} \textbf{122},
+  1564--1571.
+
+\bibitem[{Barabás \emph{et~al.}(2016)Barabás, J~Michalska-Smith \&
+  Allesina}]{barabas_effect_2016-3}
+Barabás, G., J~Michalska-Smith, M. \& Allesina, S. (2016) The {Effect} of
+  {Intra}- and {Interspecific} {Competition} on {Coexistence} in {Multispecies}
+  {Communities}. \emph{The American naturalist} \textbf{188}, E1--E12.
+
+\bibitem[{Barabás \& Meszéna(2009)}]{barabas_when_2009}
+Barabás, G. \& Meszéna, G. (2009) When the exception becomes the rule: {The}
+  disappearance of limiting similarity in the {Lotka}–{Volterra} model.
+  \emph{Journal of Theoretical Biology} \textbf{258}, 89--94.
+
+\bibitem[{Barabás \emph{et~al.}(2022)Barabás, Parent, Kraemer, Van~de Perre
+  \& De~Laender}]{barabas_evolution_2022}
+Barabás, G., Parent, C., Kraemer, A., Van~de Perre, F. \& De~Laender, F.
+  (2022) The evolution of trait variance creates a tension between species
+  diversity and functional diversity. \emph{Nature Communications} \textbf{13},
+  2521, number: 1 Publisher: Nature Publishing Group.
+
+\bibitem[{Barabás \emph{et~al.}(2012)Barabás, Pigolotti, Gyllenberg,
+  Dieckmann \& Meszéna}]{barabas_continuous_2012}
+Barabás, G., Pigolotti, S., Gyllenberg, M., Dieckmann, U. \& Meszéna, G.
+  (2012) Continuous coexistence or discrete species? {A} new review of an old
+  question. \emph{Evolutionary Ecology Research} \textbf{14}, 523--554.
+
+\bibitem[{D'Andrea \emph{et~al.}(2013)D'Andrea, Barab\'as \&
+  Ostling}]{dandrea_revising_2013}
+D'Andrea, R., Barab\'as, G. \& Ostling, A. (2013) Revising the
+  tolerance-fecundity trade-off; or, on the consequences of discontinuous
+  resource use for limiting similarity, species diversity, and trait
+  dispersion. \emph{American Naturalist} \textbf{181}, E91--101.
+
+\bibitem[{D'Andrea \& Ostling(2016)}]{dandrea_challenges_2016}
+D'Andrea, R. \& Ostling, A. (2016) Challenges in linking trait patterns to
+  niche differentiation. \emph{Oikos} \textbf{125}, 1369--1385.
+
+\bibitem[{Lande(2009)}]{lande_adaptation_2009}
+Lande, R. (2009) Adaptation to an extraordinary environment by evolution of
+  phenotypic plasticity and genetic assimilation. \emph{Journal of Evolutionary
+  Biology} \textbf{22}, 1435--1446.
+
+\bibitem[{MacArthur \& Levins(1967)}]{macarthur_limiting_1967}
+MacArthur, R. \& Levins, R. (1967) The {Limiting} {Similarity}, {Convergence},
+  and {Divergence} of {Coexisting} {Species}. \emph{The American Naturalist}
+  \textbf{101}, 377--385.
+
+\bibitem[{MacArthur(1970)}]{macarthur_packing_1970}
+MacArthur, R.H. (1970) Species packing and competitive equilibria for many
+  species. \emph{Theoretical Population Biology} \textbf{1}, 1--11.
+
+\bibitem[{May(1973)}]{may_qualitative_1973}
+May, R.M. (1973) Qualitative {Stability} in {Model} {Ecosystems}.
+  \emph{Ecology} \textbf{54}, 638--641.
+
+\bibitem[{Ng \& Geller(1969)}]{ng_geller_integrals_1968}
+Ng, E.W. \& Geller, M. (1969) A table of integrals of the error functions.
+  \emph{{Journal of Research of the National Bureau of Standards -- B.
+  Mathematical Sciences}} \textbf{738}, 1--20.
+
+\bibitem[{Pastore \emph{et~al.}(2021)Pastore, Barabás, Bimler, Mayfield \&
+  Miller}]{pastore_evolution_2021}
+Pastore, A.I., Barabás, G., Bimler, M.D., Mayfield, M.M. \& Miller, T.E.
+  (2021) The evolution of niche overlap and competitive differences.
+  \emph{Nature Ecology \& Evolution} \textbf{5}, 330--337, number: 3 Publisher:
+  Nature Publishing Group.
+
+\bibitem[{{R Core Team}(2022)}]{r_core_team_r_2022}
+{R Core Team} (2022) \emph{R: {A} language and environment for statistical
+  computing}. R Foundation for Statistical Computing, Vienna, Austria.
+
+\bibitem[{Szabó \& Meszéna(2006)}]{szabo_limiting_2006}
+Szabó, P. \& Meszéna, G. (2006) Limiting similarity revisited. \emph{Oikos}
+  \textbf{112}, 612--619.
+
+\bibitem[{Åkesson \emph{et~al.}(2021)Åkesson, Curtsdotter, Eklöf, Ebenman,
+  Norberg \& Barabás}]{akesson_importance_2021}
+Åkesson, A., Curtsdotter, A., Eklöf, A., Ebenman, B., Norberg, J. \&
+  Barabás, G. (2021) The importance of species interactions in
+  eco-evolutionary community dynamics under climate change. \emph{Nature
+  Communications} \textbf{12}, 4759, number: 1 Publisher: Nature Publishing
+  Group.
+
+\end{thebibliography}
+
+
+\end{document}
